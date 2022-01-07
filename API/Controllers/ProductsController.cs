@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Entities;
+using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,17 +15,17 @@ namespace API.Controllers
     public class ProductsController : ControllerBase        
     {
       //Make sure to add these 3 followings lines//
-      private readonly StoreContext _context;
-      public ProductsController(StoreContext context)
+      private readonly IProductRepository _productRepository;
+      public ProductsController(IProductRepository productRepository)
       {
-          this._context = context;
+         _productRepository = productRepository;
       }   
 
 //Make sure to add these 3 followings lines//
      [HttpGet]
         public async Task<ActionResult<List<Product>>> GetProducts()
         {
-           var products= await _context.Products.ToListAsync();
+           var products= await _productRepository.GetProductsAsync();
            return Ok(products);     
         }
 
@@ -32,7 +33,7 @@ namespace API.Controllers
         //Make sure to add these 3 followings lines//
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-           return await _context.Products.FindAsync(id);     
+           return await _productRepository.GetProductByIdAsync(id);     
         }
     }
 }
