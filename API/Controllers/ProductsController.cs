@@ -10,30 +10,51 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ProductsController : ControllerBase        
+  [ApiController]
+  [Route("api/[controller]")]
+  public class ProductsController : ControllerBase
+  {
+    //Make sure to add these 3 followings lines//
+    private readonly IProductRepository _productRepository;
+    public ProductsController(IProductRepository productRepository)
     {
-      //Make sure to add these 3 followings lines//
-      private readonly IProductRepository _productRepository;
-      public ProductsController(IProductRepository productRepository)
-      {
-         _productRepository = productRepository;
-      }   
-
-//Make sure to add these 3 followings lines//
-     [HttpGet]
-        public async Task<ActionResult<List<Product>>> GetProducts()
-        {
-           var products= await _productRepository.GetProductsAsync();
-           return Ok(products);     
-        }
-
-         [HttpGet("{id}")]
-        //Make sure to add these 3 followings lines//
-        public async Task<ActionResult<Product>> GetProduct(int id)
-        {
-           return await _productRepository.GetProductByIdAsync(id);     
-        }
+      _productRepository = productRepository;
     }
+
+    //Make sure to add these 3 followings lines//
+    [HttpGet]
+    public async Task<ActionResult<List<Product>>> GetProducts()
+    {
+      var products = await _productRepository.GetProductsAsync();
+      return Ok(products);
+    }
+
+    [HttpGet("{id}")]
+    //Make sure to add these 3 followings lines//
+    public async Task<ActionResult<Product>> GetProduct(int id)
+    {
+      return await _productRepository.GetProduct(id);
+    }
+
+    [HttpGet("brands")]
+    public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands()
+    {
+
+      return Ok(await _productRepository.GetProductBrands());
+    }
+
+    [HttpGet("types")]
+    public async Task<ActionResult<IReadOnlyList<ProductType>>> GetProductTypesAsync()
+    {
+
+      return Ok(await _productRepository.GetProductTypesAsync());
+    }
+
+
+
+
+
+
+
+  }
 }
